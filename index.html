@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phoebe 專屬香水</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <div id="story" class="scene">
+    <p>你醒來在森林中，面前有三條小徑。</p>
+    <button onclick="startGame(0)">走向陽光處</button>
+    <button onclick="startGame(1)">踏入陰影裡</button>
+    <button onclick="startGame(2)">跟隨花香</button>
+  </div>
+  <div id="question" class="scene" style="display:none"></div>
+  <div id="result" class="scene" style="display:none"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
