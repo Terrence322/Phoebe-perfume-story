@@ -1,0 +1,4 @@
+body { font-family: sans-serif; text-align: center; background: #fafafa; }
+.scene { margin-top: 40px; }
+button { margin: 8px; padding: 10px 20px; }
+#card { border: 1px solid #ccc; padding: 20px; display:inline-block; background:#fff; }
