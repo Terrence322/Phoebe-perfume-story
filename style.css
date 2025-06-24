@@ -2,6 +2,7 @@ body { font-family: sans-serif; text-align: center; background: #fafafa; }
 .scene { margin-top: 40px; }
 button { margin: 8px; padding: 10px 20px; }
 #card { border: 1px solid #ccc; padding: 20px; display:inline-block; background:#fff; }
+68whxf-codex/設計專屬香水配方互動劇情
 .image-options { position: relative; display:inline-block; }
 #q1-img { width: 100%; height: auto; display:block; }
 .image-options .opt { position:absolute; border:none; background:transparent; cursor:pointer; }
@@ -9,3 +10,5 @@ button { margin: 8px; padding: 10px 20px; }
 .stone { left:30%; top:70%; width:10%; height:10%; }
 .log { left:60%; top:60%; width:15%; height:15%; }
 .flower { left:70%; top:40%; width:15%; height:15%; }
+=======
+main

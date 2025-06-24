@@ -26,6 +26,17 @@ const questions = [
     ]
   },
   {
+ 68whxf-codex/設計專屬香水配方互動劇情
+=======
+    text: '前方出現小屋，你決定？',
+    options: [
+      { text: '推門而入', scent: '木質' },
+      { text: '在門口賞花', scent: '花香' },
+      { text: '繼續探索森林', scent: '清新' }
+    ]
+  },
+  {
+ main
     text: '夜幕降臨，你準備？',
     options: [
       { text: '點燃營火', scent: '木質' },
@@ -54,6 +65,7 @@ function showQuestion() {
   }
   const q = questions[current];
   const container = document.getElementById('question');
+ 68whxf-codex/設計專屬香水配方互動劇情
   if (current === 0) {
     container.innerHTML = `<p>${q.text}</p>
       <div class="image-options">
@@ -82,6 +94,21 @@ function choose(index, el) {
     current++;
     showQuestion();
   }, 300);
+=======
+  container.innerHTML = `<p>${q.text}</p>` +
+    q.options.map((o,i)=>`<button onclick="choose(${i})">${o.text}</button>`).join('');
+  container.style.display = 'block';
+}
+
+function choose(index) {
+  const q = questions[current];
+  const scent = q.options[index].scent;
+  const list = noteMap[scent];
+  const item = list[Math.floor(Math.random() * list.length)];
+  scentChoices.push(item);
+  current++;
+  showQuestion();
+ main
 }
 
 function askName() {
