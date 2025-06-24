@@ -26,6 +26,8 @@ const questions = [
     ]
   },
   {
+ 68whxf-codex/設計專屬香水配方互動劇情
+=======
     text: '前方出現小屋，你決定？',
     options: [
       { text: '推門而入', scent: '木質' },
@@ -34,6 +36,7 @@ const questions = [
     ]
   },
   {
+ main
     text: '夜幕降臨，你準備？',
     options: [
       { text: '點燃營火', scent: '木質' },
@@ -62,6 +65,36 @@ function showQuestion() {
   }
   const q = questions[current];
   const container = document.getElementById('question');
+ 68whxf-codex/設計專屬香水配方互動劇情
+  if (current === 0) {
+    container.innerHTML = `<p>${q.text}</p>
+      <div class="image-options">
+        <img src="ChatGPT Image 2025年6月24日 下午01_56_54.png" alt="q1" id="q1-img">
+        <button class="stone opt" onclick="choose(0, this)" aria-label="${q.options[0].text}"></button>
+        <button class="log opt" onclick="choose(1, this)" aria-label="${q.options[1].text}"></button>
+        <button class="flower opt" onclick="choose(2, this)" aria-label="${q.options[2].text}"></button>
+      </div>`;
+  } else {
+    container.innerHTML = `<p>${q.text}</p>` +
+      q.options.map((o,i)=>`<button onclick="choose(${i}, this)">${o.text}</button>`).join('');
+  }
+  container.style.display = 'block';
+}
+
+function choose(index, el) {
+  if (el) {
+    el.classList.add('glow');
+  }
+  setTimeout(() => {
+    const q = questions[current];
+    const scent = q.options[index].scent;
+    const list = noteMap[scent];
+    const item = list[Math.floor(Math.random() * list.length)];
+    scentChoices.push(item);
+    current++;
+    showQuestion();
+  }, 300);
+=======
   container.innerHTML = `<p>${q.text}</p>` +
     q.options.map((o,i)=>`<button onclick="choose(${i})">${o.text}</button>`).join('');
   container.style.display = 'block';
@@ -75,6 +108,7 @@ function choose(index) {
   scentChoices.push(item);
   current++;
   showQuestion();
+ main
 }
 
 function askName() {
