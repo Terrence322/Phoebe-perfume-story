@@ -3,12 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>互動問答</title>
+<title>迷宮選擇 - 互動故事</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-<div id="question" class="scene"></div>
-<div id="result" class="scene" style="display:none"></div>
+<div id="app">
+  <div id="question-container" class="question-scene">
+    <div class="question-text-box">
+      <h2 id="question-title"></h2>
+      <p id="question-text"></p>
+    </div>
+    <div class="image-container">
+      <img id="question-image" src="" alt="">
+      <div id="clickable-areas"></div>
+    </div>
+    <div id="music-player" class="music-player hidden">
+      <audio id="audio-player" controls></audio>
+    </div>
+  </div>
+  <div id="result-container" class="result-scene hidden">
+    <h2>你的選擇之路</h2>
+    <div id="result-content"></div>
+    <button id="restart-btn" class="restart-btn">重新開始</button>
+  </div>
+</div>
 <script src="script.js"></script>
 </body>
 </html>
