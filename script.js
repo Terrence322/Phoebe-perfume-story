@@ -7,9 +7,9 @@ const questions = [
     image: 'ChatGPT Image 2025年6月24日 下午01_56_54.png',
     type: 'clickable',
     options: [
-      { id: 'door', text: '一扇半掩的木門後', className: 'area-door', value: 'A' },
-      { id: 'passage', text: '一段濕冷的綠牆通道', className: 'area-passage', value: 'B' },
-      { id: 'storage', text: '地下貯藏室', className: 'area-storage', value: 'C' }
+      { id: 'door', text: '一扇半掩的木門後', className: 'area-door', value: 'A', position: { left: 5, top: 30, width: 25, height: 50 } },
+      { id: 'passage', text: '一段濕冷的綠牆通道', className: 'area-passage', value: 'B', position: { left: 37.5, top: 30, width: 35, height: 60 } },
+      { id: 'storage', text: '地下貯藏室', className: 'area-storage', value: 'C', position: { right: 2, top: 70, width: 20, height: 20 } }
     ]
   },
   {
@@ -19,9 +19,9 @@ const questions = [
     image: 'ChatGPT Image 2025年6月24日 下午01_56_43.png',
     type: 'clickable',
     options: [
-      { id: 'doll', text: '一隻破布偶', className: 'area-doll', value: 'A' },
-      { id: 'notebook', text: '一本舊筆記本', className: 'area-notebook', value: 'B' },
-      { id: 'photo', text: '一張撕掉角的照片', className: 'area-photo', value: 'C' }
+      { id: 'doll', text: '一隻破布偶', className: 'area-doll', value: 'A', position: { left: 32, bottom: 2, width: 16, height: 11 } },
+      { id: 'notebook', text: '一本舊筆記本', className: 'area-notebook', value: 'B', position: { right: 21, bottom: 3.5, width: 11, height: 7 } },
+      { id: 'photo', text: '一張撕掉角的照片', className: 'area-photo', value: 'C', position: { left: 54, bottom: 5, width: 10, height: 5 } }
     ]
   },
   {
@@ -135,6 +135,7 @@ let currentAudio = null;
 let selectedMusicOption = null; // 新增：追蹤選中的音樂選項
 
 // DOM 元素
+const coverPage = document.getElementById('cover-page');
 const questionContainer = document.getElementById('question-container');
 const resultContainer = document.getElementById('result-container');
 const questionTitle = document.getElementById('question-title');
@@ -146,10 +147,63 @@ const audioPlayer = document.getElementById('audio-player');
 const resultContent = document.getElementById('result-content');
 const restartBtn = document.getElementById('restart-btn');
 
+// 封面頁面功能
+function startGame() {
+  coverPage.classList.add('hidden');
+  questionContainer.classList.remove('hidden');
+  showQuestion();
+}
+
+function updateClickableAreaPositions() {
+  const imgBox = document.querySelector('.image-container');
+  const img    = document.getElementById('question-image');
+  if (!imgBox || !img) return;
+
+  if (!img.complete) {          // 確保圖片載完
+    img.onload = updateClickableAreaPositions;
+    return;
+  }
+
+  const boxRect = imgBox.getBoundingClientRect();
+  const imgRect = img.getBoundingClientRect();
+
+  const w    = imgRect.width;
+  const h    = imgRect.height;
+  const offX = imgRect.left - boxRect.left;
+  const offY = imgRect.top  - boxRect.top;
+
+  document.querySelectorAll('.clickable-area').forEach(a => {
+    const pc = n => parseFloat(n || 0);
+    const x  = pc(a.dataset.x);
+    const y  = pc(a.dataset.y);
+    const r  = pc(a.dataset.right);
+    const b  = pc(a.dataset.bottom);
+    const ww = pc(a.dataset.w);
+    const hh = pc(a.dataset.h);
+
+    const realW = ww / 100 * w;
+    const realH = hh / 100 * h;
+    a.style.width  = `${realW}px`;
+    a.style.height = `${realH}px`;
+    a.style.left   = (a.dataset.x !== '' ? offX + x/100*w
+                   : offX + w - r/100*w - realW) + 'px';
+    a.style.top    = (a.dataset.y !== '' ? offY + y/100*h
+                   : offY + h - b/100*h - realH) + 'px';
+  });
+}
+
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
-  showQuestion();
+  // 封面頁面點擊事件
+  coverPage.addEventListener('click', startGame);
+  
+  // 重新開始按鈕事件
   restartBtn.addEventListener('click', restart);
+  
+  // 監聽視窗大小變化
+  window.addEventListener('resize', () => {
+    updateClickableAreaPositions();
+  });
 });
 
 // 顯示問題
@@ -168,6 +222,11 @@ function showQuestion() {
   // 更新圖片
   questionImage.src = question.image;
   questionImage.alt = question.title;
+  
+  // 圖片載入完成後更新位置
+  questionImage.onload = () => {
+    requestAnimationFrame(updateClickableAreaPositions);
+  };
   
   // 清除之前的選項
   clickableAreas.innerHTML = '';
@@ -194,9 +253,24 @@ function createClickableAreas(question) {
     area.className = `clickable-area ${option.className}`;
     area.setAttribute('data-option', option.id);
     area.setAttribute('title', option.text);
+    
+    // 儲存位置資訊到 data attributes
+    if (option.position) {
+      const pos = option.position;
+      area.setAttribute('data-x', pos.left !== undefined ? pos.left : '');
+      area.setAttribute('data-y', pos.top !== undefined ? pos.top : '');
+      area.setAttribute('data-right', pos.right !== undefined ? pos.right : '');
+      area.setAttribute('data-bottom', pos.bottom !== undefined ? pos.bottom : '');
+      area.setAttribute('data-w', pos.width);
+      area.setAttribute('data-h', pos.height);
+    }
+    
     area.addEventListener('click', () => handleAnswer(option));
     clickableAreas.appendChild(area);
   });
+  
+  // 設定初始位置
+  updateClickableAreaPositions();
 }
 
 // 創建音樂選項
@@ -221,6 +295,11 @@ function createMusicOptions(question) {
   
   clickableAreas.appendChild(musicSelection);
   clickableAreas.appendChild(confirmButton);
+  
+  // 確保確認按鈕可見
+  setTimeout(() => {
+    confirmButton.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  }, 100);
 }
 
 // 處理答案選擇
@@ -258,7 +337,6 @@ function handleMusicChoice(option) {
   
   // 更新音樂播放器
   audioPlayer.src = option.audio;
-  musicPlayer.classList.remove('hidden');
   
   // 標記正在播放和選中的按鈕
   event.target.classList.add('playing');
@@ -349,10 +427,9 @@ function restart() {
   currentAudio = null;
   selectedMusicOption = null; // 重置選擇狀態
   
-  questionContainer.classList.remove('hidden');
+  questionContainer.classList.add('hidden');
   resultContainer.classList.add('hidden');
-  
-  showQuestion();
+  coverPage.classList.remove('hidden');
 }
 
 // 生成配方卡

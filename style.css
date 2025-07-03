@@ -6,24 +6,119 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: #000;
   color: #fff;
 }
 
 #app {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   position: relative;
+}
+
+/* 封面頁面樣式 */
+.cover-page {
+  width: 100%;
+  height: 100vh;
+  background-image: url('WhatsApp Image 2025-07-04 at 04.49.54_df32a160.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cover-page:hover {
+  transform: scale(1.02);
+}
+
+.cover-content {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 40px 60px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  animation: fadeInUp 1s ease-out;
+}
+
+.cover-title {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #ff6b6b;
+  text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+
+.cover-subtitle {
+  font-size: 1.8rem;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  opacity: 0.9;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* 手機響應式設計 */
+@media (max-width: 768px) {
+  .cover-content {
+    padding: 30px 40px;
+  }
+  
+  .cover-title {
+    font-size: 2.8rem;
+  }
+  
+  .cover-subtitle {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cover-content {
+    padding: 20px 30px;
+  }
+  
+  .cover-title {
+    font-size: 2.2rem;
+  }
+  
+  .cover-subtitle {
+    font-size: 1.2rem;
+  }
 }
 
 .question-scene,
 .result-scene {
   width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
+  min-height: 100vh;
+  position: relative;
 }
 
 .hidden {
@@ -60,14 +155,16 @@ body {
 /* 圖片容器 */
 .image-container {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   position: relative;
+  overflow: hidden;
 }
 
 #question-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   position: absolute;
   top: 0;
   left: 0;
@@ -88,7 +185,7 @@ body {
   position: absolute;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.1);
+  background: transparent;
   border: 2px solid transparent;
 }
 
@@ -103,60 +200,28 @@ body {
   background: rgba(255, 204, 0, 0.3);
 }
 
-/* 第一題的點擊區域 */
-.area-door {
-  left: 5%;
-  top: 40%;
-  width: 25%;
-  height: 40%;
-}
-
-.area-passage {
-  left: 37.5%;
-  top: 30%;
-  width: 25%;
-  height: 60%;
-}
-
-.area-storage {
-  right: 5%;
-  top: 50%;
-  width: 25%;
-  height: 35%;
-}
-
-/* 第二題的點擊區域 */
-.area-doll {
-  left: 10%;
-  bottom: 20%;
-  width: 20%;
-  height: 25%;
-}
-
-.area-notebook {
-  left: 40%;
-  bottom: 15%;
-  width: 20%;
-  height: 20%;
-}
-
+/* 點擊區域 - 位置由 JS 動態計算 */
+.area-door,
+.area-passage,
+.area-storage,
+.area-doll,
+.area-notebook,
 .area-photo {
-  right: 10%;
-  bottom: 25%;
-  width: 20%;
-  height: 20%;
+  /* 位置由 JS 動態設定 */
 }
 
 /* 第三題的音樂選擇 */
 .music-selection {
   position: absolute;
-  bottom: 10%;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
   text-align: center;
   width: 90%;
   max-width: 500px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
 }
 
 .music-button {
@@ -368,8 +433,9 @@ audio {
   }
   
   .music-selection {
-    bottom: 5%;
+    bottom: 80px;
     width: 95%;
+    max-height: calc(100vh - 160px);
   }
   
   audio {
@@ -837,8 +903,10 @@ audio {
 }
 
 .confirm-button {
-  display: block;
-  margin: 30px auto 0;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   padding: 15px 40px;
   font-size: 1.2rem;
   font-weight: bold;
@@ -849,6 +917,7 @@ audio {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+  z-index: 11;
 }
 
 .confirm-button:hover:not(:disabled) {
@@ -862,3 +931,6 @@ audio {
   cursor: not-allowed;
   opacity: 0.5;
 }
+
+#music-player,
+#audio-player { display: none !important; }
