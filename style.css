@@ -152,62 +152,37 @@ body {
   line-height: 1.5;
 }
 
-/* 圖片容器 */
-.image-container {
+/* SVG場景容器 */
+.scene-container {
   width: 100%;
   height: 100vh;
   position: relative;
   overflow: hidden;
 }
 
-#question-image {
+.scene-svg {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  object-position: center;
-  position: absolute;
-  top: 0;
-  left: 0;
+  display: block;
 }
 
-/* 可點擊區域容器 */
-#clickable-areas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 5;
-}
-
-/* 可點擊區域 */
-.clickable-area {
-  position: absolute;
+/* SVG熱區樣式 */
+.hotspot {
+  fill: transparent;
+  stroke: none;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: transparent;
-  border: 2px solid transparent;
 }
 
-.clickable-area:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: #ffcc00;
-  box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+.hotspot:hover {
+  fill: transparent;
+  stroke: none;
 }
 
-.clickable-area.clicked {
+.hotspot.clicked {
   animation: pulse 0.5s ease-out;
-  background: rgba(255, 204, 0, 0.3);
-}
-
-/* 點擊區域 - 位置由 JS 動態計算 */
-.area-door,
-.area-passage,
-.area-storage,
-.area-doll,
-.area-notebook,
-.area-photo {
-  /* 位置由 JS 動態設定 */
+  fill: transparent;
+  stroke: none;
 }
 
 /* 第三題的音樂選擇 */
@@ -391,8 +366,8 @@ audio {
     font-size: 1rem;
   }
   
-  .clickable-area {
-    border-width: 3px;
+  .hotspot {
+    stroke: none;
   }
   
   .music-button {

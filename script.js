@@ -1,15 +1,17 @@
-// 問題資料
+// 問題資料 (使用像素座標，假設圖片尺寸為768x768)
 const questions = [
   {
     id: 1,
     title: '第1題：迷宮中的選擇',
     text: '一場殘酷的捉迷藏即將開始，你選擇躲在哪裡？',
     image: 'ChatGPT Image 2025年6月24日 下午01_56_54.png',
+    width: 768,
+    height: 768,
     type: 'clickable',
     options: [
-      { id: 'door', text: '一扇半掩的木門後', className: 'area-door', value: 'A', position: { left: 5, top: 30, width: 25, height: 50 } },
-      { id: 'passage', text: '一段濕冷的綠牆通道', className: 'area-passage', value: 'B', position: { left: 37.5, top: 30, width: 35, height: 60 } },
-      { id: 'storage', text: '地下貯藏室', className: 'area-storage', value: 'C', position: { right: 2, top: 70, width: 20, height: 20 } }
+      { id: 'door', text: '一扇半掩的木門後', value: 'A', x: 120, y: 230, w: 140, h: 380 },
+      { id: 'passage', text: '一段濕冷的綠牆通道', value: 'B', x: 290, y: 230, w: 230, h: 480 },
+      { id: 'storage', text: '地下貯藏室', value: 'C', x: 550, y: 540, w: 90, h: 150 }
     ]
   },
   {
@@ -17,11 +19,13 @@ const questions = [
     title: '第2題：跳繩橋上',
     text: '繩索高速甩動，你站在橋邊，手上抱著唯一重要的東西。那是⋯⋯',
     image: 'ChatGPT Image 2025年6月24日 下午01_56_43.png',
+    width: 768,
+    height: 768,
     type: 'clickable',
     options: [
-      { id: 'doll', text: '一隻破布偶', className: 'area-doll', value: 'A', position: { left: 32, bottom: 2, width: 16, height: 11 } },
-      { id: 'notebook', text: '一本舊筆記本', className: 'area-notebook', value: 'B', position: { right: 21, bottom: 3.5, width: 11, height: 7 } },
-      { id: 'photo', text: '一張撕掉角的照片', className: 'area-photo', value: 'C', position: { left: 54, bottom: 5, width: 10, height: 5 } }
+      { id: 'doll', text: '一隻破布偶', value: 'A', x: 295, y: 680, w: 80, h: 85 },
+      { id: 'notebook', text: '一本舊筆記本', value: 'B', x: 470, y: 700, w: 55, h: 55 },
+      { id: 'photo', text: '一張撕掉角的照片', value: 'C', x: 422, y: 695, w: 33, h: 40 }
     ]
   },
   {
@@ -29,6 +33,8 @@ const questions = [
     title: '第3題：天空之聲',
     text: '獨自站在決戰圓台，你聽見的，是⋯⋯',
     image: 'ChatGPT Image 2025年6月24日 下午01_56_30.png',
+    width: 768,
+    height: 768,
     type: 'music',
     options: [
       { id: 'pink', text: 'Pink Soldiers', audio: 'Pink Soldiers.mp3', value: 'A' },
@@ -140,8 +146,7 @@ const questionContainer = document.getElementById('question-container');
 const resultContainer = document.getElementById('result-container');
 const questionTitle = document.getElementById('question-title');
 const questionText = document.getElementById('question-text');
-const questionImage = document.getElementById('question-image');
-const clickableAreas = document.getElementById('clickable-areas');
+const scene = document.getElementById('scene');
 const musicPlayer = document.getElementById('music-player');
 const audioPlayer = document.getElementById('audio-player');
 const resultContent = document.getElementById('result-content');
@@ -154,43 +159,7 @@ function startGame() {
   showQuestion();
 }
 
-function updateClickableAreaPositions() {
-  const imgBox = document.querySelector('.image-container');
-  const img    = document.getElementById('question-image');
-  if (!imgBox || !img) return;
 
-  if (!img.complete) {          // 確保圖片載完
-    img.onload = updateClickableAreaPositions;
-    return;
-  }
-
-  const boxRect = imgBox.getBoundingClientRect();
-  const imgRect = img.getBoundingClientRect();
-
-  const w    = imgRect.width;
-  const h    = imgRect.height;
-  const offX = imgRect.left - boxRect.left;
-  const offY = imgRect.top  - boxRect.top;
-
-  document.querySelectorAll('.clickable-area').forEach(a => {
-    const pc = n => parseFloat(n || 0);
-    const x  = pc(a.dataset.x);
-    const y  = pc(a.dataset.y);
-    const r  = pc(a.dataset.right);
-    const b  = pc(a.dataset.bottom);
-    const ww = pc(a.dataset.w);
-    const hh = pc(a.dataset.h);
-
-    const realW = ww / 100 * w;
-    const realH = hh / 100 * h;
-    a.style.width  = `${realW}px`;
-    a.style.height = `${realH}px`;
-    a.style.left   = (a.dataset.x !== '' ? offX + x/100*w
-                   : offX + w - r/100*w - realW) + 'px';
-    a.style.top    = (a.dataset.y !== '' ? offY + y/100*h
-                   : offY + h - b/100*h - realH) + 'px';
-  });
-}
 
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
@@ -199,11 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 重新開始按鈕事件
   restartBtn.addEventListener('click', restart);
-  
-  // 監聽視窗大小變化
-  window.addEventListener('resize', () => {
-    updateClickableAreaPositions();
-  });
 });
 
 // 顯示問題
@@ -219,17 +183,8 @@ function showQuestion() {
   questionTitle.textContent = question.title;
   questionText.textContent = question.text;
   
-  // 更新圖片
-  questionImage.src = question.image;
-  questionImage.alt = question.title;
-  
-  // 圖片載入完成後更新位置
-  questionImage.onload = () => {
-    requestAnimationFrame(updateClickableAreaPositions);
-  };
-  
-  // 清除之前的選項
-  clickableAreas.innerHTML = '';
+  // 清除之前的內容
+  scene.innerHTML = '';
   musicPlayer.classList.add('hidden');
   
   // 停止之前的音樂
@@ -240,41 +195,67 @@ function showQuestion() {
   
   // 根據問題類型創建選項
   if (question.type === 'clickable') {
-    createClickableAreas(question);
+    createSVGScene(question);
   } else if (question.type === 'music') {
     createMusicOptions(question);
   }
 }
 
-// 創建可點擊區域
-function createClickableAreas(question) {
+// 創建SVG場景
+function createSVGScene(question) {
+  // 創建SVG命名空間
+  const svgNS = 'http://www.w3.org/2000/svg';
+  
+  // 創建SVG元素
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${question.width} ${question.height}`);
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  svg.classList.add('scene-svg');
+  
+  // 創建底圖
+  const imgEl = document.createElementNS(svgNS, 'image');
+  imgEl.setAttributeNS('http://www.w3.org/1999/xlink', 'href', question.image);
+  imgEl.setAttribute('width', question.width);
+  imgEl.setAttribute('height', question.height);
+  svg.appendChild(imgEl);
+  
+  // 創建熱區
   question.options.forEach(option => {
-    const area = document.createElement('div');
-    area.className = `clickable-area ${option.className}`;
-    area.setAttribute('data-option', option.id);
-    area.setAttribute('title', option.text);
-    
-    // 儲存位置資訊到 data attributes
-    if (option.position) {
-      const pos = option.position;
-      area.setAttribute('data-x', pos.left !== undefined ? pos.left : '');
-      area.setAttribute('data-y', pos.top !== undefined ? pos.top : '');
-      area.setAttribute('data-right', pos.right !== undefined ? pos.right : '');
-      area.setAttribute('data-bottom', pos.bottom !== undefined ? pos.bottom : '');
-      area.setAttribute('data-w', pos.width);
-      area.setAttribute('data-h', pos.height);
-    }
-    
-    area.addEventListener('click', () => handleAnswer(option));
-    clickableAreas.appendChild(area);
+    const rect = document.createElementNS(svgNS, 'rect');
+    rect.setAttribute('x', option.x);
+    rect.setAttribute('y', option.y);
+    rect.setAttribute('width', option.w);
+    rect.setAttribute('height', option.h);
+    rect.classList.add('hotspot');
+    rect.setAttribute('data-option', option.id);
+    rect.setAttribute('title', option.text);
+    rect.addEventListener('click', () => handleAnswer(option));
+    svg.appendChild(rect);
   });
   
-  // 設定初始位置
-  updateClickableAreaPositions();
+  // 將SVG添加到場景中
+  scene.appendChild(svg);
 }
 
 // 創建音樂選項
 function createMusicOptions(question) {
+  // 先創建底圖SVG
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${question.width} ${question.height}`);
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  svg.classList.add('scene-svg');
+  
+  // 創建底圖
+  const imgEl = document.createElementNS(svgNS, 'image');
+  imgEl.setAttributeNS('http://www.w3.org/1999/xlink', 'href', question.image);
+  imgEl.setAttribute('width', question.width);
+  imgEl.setAttribute('height', question.height);
+  svg.appendChild(imgEl);
+  
+  scene.appendChild(svg);
+  
+  // 創建音樂選項容器
   const musicSelection = document.createElement('div');
   musicSelection.className = 'music-selection';
   
@@ -293,8 +274,8 @@ function createMusicOptions(question) {
   confirmButton.disabled = true; // 初始時禁用
   confirmButton.addEventListener('click', confirmMusicSelection);
   
-  clickableAreas.appendChild(musicSelection);
-  clickableAreas.appendChild(confirmButton);
+  scene.appendChild(musicSelection);
+  scene.appendChild(confirmButton);
   
   // 確保確認按鈕可見
   setTimeout(() => {
