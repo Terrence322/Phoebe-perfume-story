@@ -64,7 +64,7 @@ const BASE_NOTE_MAP = {      // Q3：後調（30%）
 };
 
 // ---------- 香水配方計算函式 ----------
-function getPerfumeFormula(answerValues, totalGrams = 4.5) {
+function getPerfumeFormula(answerValues, totalGrams = 9.5) {
   if (!Array.isArray(answerValues) || answerValues.length !== 3) {
     throw new Error('❌ 答案應為長度 3 的字母陣列');
   }
@@ -440,7 +440,7 @@ function generatePerfumeCard() {
         
         <div class="card-footer">
           <p class="creation-date">創建於 ${new Date().toLocaleDateString('zh-TW')}</p>
-          <p class="card-signature">Phoebe Perfume Story</p>
+          <p class="card-signature">21C@JC-JCISC</p>
         </div>
       </div>
       
