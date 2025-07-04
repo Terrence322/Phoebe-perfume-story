@@ -4,20 +4,20 @@ const questions = [
     id: 1,
     title: '第1題：迷宮中的選擇',
     text: '一場殘酷的捉迷藏即將開始，你選擇躲在哪裡？',
-    image: 'ChatGPT Image 2025年6月24日 下午01_56_54.png',
+    image: 'Q1.png',
     width: 768,
     height: 768,
     type: 'clickable',
     options: [
-      { id: 'door', text: '一扇半掩的木門後', value: 'A', x: 120, y: 230, w: 140, h: 380 },
-      { id: 'passage', text: '一段濕冷的綠牆通道', value: 'B', x: 290, y: 230, w: 230, h: 480 },
-      { id: 'storage', text: '地下貯藏室', value: 'C', x: 550, y: 540, w: 90, h: 150 }
+      { id: 'door', text: '一扇半掩的木門後', value: 'A', x: 150, y: 260, w: 140, h: 260 },
+      { id: 'passage', text: '一段濕冷的綠牆通道', value: 'B', x: 480, y: 260, w: 130, h: 240 },
+      { id: 'storage', text: '地下貯藏室', value: 'C', x: 495, y: 555, w: 120, h: 140 }
     ]
   },
   {
     id: 2,
     title: '第2題：跳繩橋上',
-    text: '繩索高速甩動，你站在橋邊，手上抱著唯一重要的東西。那是⋯⋯',
+    text: '繩索高速甩動，發出尖銳的破空聲，橋面在腳下微微晃動。<br>你站在橋邊，手上緊緊抱著唯一重要的東西。',
     image: 'ChatGPT Image 2025年6月24日 下午01_56_43.png',
     width: 768,
     height: 768,
@@ -31,7 +31,7 @@ const questions = [
   {
     id: 3,
     title: '第3題：天空之聲',
-    text: '獨自站在決戰圓台，你聽見的，是⋯⋯',
+    text: '獨自站在決戰的圓台上，四周寂靜無聲，唯有天空傳來幾段旋律，輕輕地撥動你的心弦。\n**請傾聽，選擇你喜歡的聲音。**\n**選擇你所愛的聲音，讓它成為此刻的記憶。**',
     image: 'ChatGPT Image 2025年6月24日 下午01_56_30.png',
     width: 768,
     height: 768,
@@ -181,7 +181,11 @@ function showQuestion() {
   
   // 更新問題文字
   questionTitle.textContent = question.title;
-  questionText.textContent = question.text;
+  // 處理換行和粗體格式
+  const formattedText = question.text
+    .replace(/\n/g, '<br>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  questionText.innerHTML = formattedText;
   
   // 清除之前的內容
   scene.innerHTML = '';
@@ -233,6 +237,20 @@ function createSVGScene(question) {
     svg.appendChild(rect);
   });
   
+  // 為第2題添加SVG說明文字
+  if (question.id === 2) {
+    const instructionText = document.createElementNS(svgNS, 'text');
+    instructionText.setAttribute('x', '384'); // 圖片中央
+    instructionText.setAttribute('y', '650'); // 三個選擇的中間上方
+    instructionText.setAttribute('text-anchor', 'middle');
+    instructionText.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif');
+    instructionText.setAttribute('font-size', '20');
+    instructionText.setAttribute('font-weight', 'bold');
+    instructionText.setAttribute('fill', 'white'); // 實白色
+    instructionText.textContent = '請選擇，你無法放手的珍寶';
+    svg.appendChild(instructionText);
+  }
+  
   // 將SVG添加到場景中
   scene.appendChild(svg);
 }
@@ -254,6 +272,12 @@ function createMusicOptions(question) {
   svg.appendChild(imgEl);
   
   scene.appendChild(svg);
+  
+  // 創建說明文字（使用HTML元素架構）
+  const instructionText = document.createElement('div');
+  instructionText.className = 'instruction-text';
+  instructionText.textContent = '可選的按鍵,逐一聆聽:';
+  scene.appendChild(instructionText);
   
   // 創建音樂選項容器
   const musicSelection = document.createElement('div');
